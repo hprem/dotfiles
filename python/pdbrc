@@ -1,0 +1,3 @@
+print ("PDB: Runing cmds from ~/.pdbrc")
+
+alias i interact

@@ -1,0 +1,29 @@
+# vim: filetype=sh
+
+[ -f ~/.zsh.env.local ] && source ~/.zsh.env.local
+
+alias zrc='vi ~/.zshrc'
+alias zal='vi ~/.zsh.alias'
+alias zenv='vi ~/.zsh.env'
+alias szrc="source ~/.zshrc"
+alias szal='source ~/.zsh.alias'
+alias szenv='source ~/.zsh.env'
+
+alias x='exit'
+alias vi='nvim'
+alias vim='nvim'
+alias vimdiff='nvimdiff'
+
+alias hx='helix'
+alias cat='bat --theme "Catppuccin Macchiato"'
+
+alias vimrc='vi ~/.config/nvim/init.vim'
+
+alias ls="lsd"
+alias ll="ls -l"
+alias la="ls -la"
+alias lt="ls --tree"
+
+alias jctl="sudo journalctl"
+
+mcd() { mkdir -p "$1"; cd "$1"; }

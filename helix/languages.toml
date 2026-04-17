@@ -1,0 +1,194 @@
+[[language]]
+name = "toml"
+auto-format = true
+# https://github.com/bd82/toml-tools/tree/master/packages/prettier-plugin-toml
+formatter = { command = "prettier", args = ["--parser", "toml"] }
+
+[[language]]
+name = "json"
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "markdown"
+formatter = { command = "uvx", args = ["mdformat", "-"] }
+#formatter = { command = “deno”, args = [“fmt”, “-“, “—ext”, “md”] }
+# auto-format = true
+# language-servers = ["lsp-ai-md"]
+
+[[language]]
+name = "yaml"
+indent = { tab-width = 1, unit = "  " }
+language-servers = ["marksman", "markdown-oxide", "harper-ls"]
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+
+[[language]]
+name = "sshclientconfig"
+scope = "source.sshclientconfig"
+file-types = [{ glob = ".ssh/config*" }, { glob = "/etc/ssh/ssh_config" }, { glob = "ssh_config.d/*.conf" } ]
+comment-token = "#"
+
+[[language]]
+name = "bash"
+auto-format = true
+formatter = {command = "shfmt", args = ["-i", "2", "-bn", "-ci", "-sr"]}
+
+[[language]]
+name = "python"
+language-servers = ["pylsp",  "ruff", "scls", "lsp-ai"]
+# formatter = { command = "black", args = ["-"] }
+formatter = { command = "uvx", args = ["ruff", "format", "-" ] }
+# formatter = { command = "bash", args = ["-c", "ruff check --fix - | ruff format -"] }
+file-types = ["py", "ipynb"]
+diagnostic-severity = "hint"
+
+[[language]]
+name = "git-commit"
+language-servers = [ "scls" ]
+
+[language-server.harper-ls]
+command = "harper-ls"
+args = ["--stdio"]
+
+[language-server.pylsp]
+command = "uvx"
+args = ["--from", "python-lsp-server", "pylsp"]
+
+[language-server.pylsp.config.pylsp]
+plugins.pylint.enabled = false
+plugins.pyflakes.enabled = false
+plugins.pyls_mypy.live_mode = false
+plugins.isort.enabled = false
+plugins.rope_autoimport.enabled = false
+plugins.flake8.maxLineLength = 120
+plugins.pycodestyle.maxLineLength = 120
+plugins.black.enabled = false
+plugins.pyls_mypy.enabled = true
+plugins.pylsp_mypy.live_mode = true
+
+[language-server.ruff]
+command = "uvx"
+args = ["ruff", "server", "--preview"]
+environment = { "RUFF_TRACE" = "messages" }
+
+[language.formatter]
+command = "uv"
+args = ["ruff", "format", "-"]
+
+[language-server.ruff.config.settings]
+lineLength = 100
+logLevel = "debug"
+
+[language-server.ruff.config.settings.lint]
+select = ["E", "F", "W", "B", "I", "RUF", "N", "LOG", "ERA", "W", "D", "UP", "ANN", "ASYNC", "S", "RET", "TCH", "ARG", "PTH", "DOC"]
+preview = true
+
+[language-server.ruff.config.settings.format]
+preview = true
+quote-style = "double"
+docstring-code-format = true
+indent-style = "space"
+
+# simple language server for autocompletion
+# https://github.com/estin/simple-completion-language-server?tab=readme-ov-file
+[language-server.scls]
+command = "simple-completion-language-server"
+
+[language-server.scls.config]
+max_completion_items = 20            # set max completion results len for each group: words, snippets, unicode-input
+snippets_first = true                # completions will return before snippets by default
+snippets_inline_by_word_tail = false # suggest snippets by WORD tail, for example text `xsq|` become `x^2|` when snippet `sq` has body `^2`
+feature_words = true                 # enable completion by word
+feature_snippets = true              # enable snippets
+feature_unicode_input = true         # enable "unicode input"
+feature_paths = true                 # enable path completion
+feature_citations = false            # enable citation completion (only on `citation` feature enabled)
+
+##############################
+## Configuration for lsp-ai ##
+##############################
+[language-server.lsp-ai]
+command = "lsp-ai"
+
+[language-server.lsp-ai.config.memory]
+file_store = { }
+
+[language-server.lsp-ai.config.models.model1]
+# type = "open_ai"
+#chat_endpoint = "https://api.openai.com/v1/chat/completions"
+#model =  "gpt-4o"
+#auth_token_env_var_name = "OPENAI_API_KEY"
+type = "open_ai"
+chat_endpoint = "https://api.groq.com/openai/v1/chat/completions"
+model = "llama-3.1-8b-instant"
+auth_token_env_var_name = "GROQ_API_KEY"
+
+[language-server.lsp-ai.config.chat]
+trigger = "!C"
+action_display_name = "Chat"
+model = "model1"
+
+[language-server.lsp-ai.config.chat.parameters]
+max_context = 4096
+max_tokens = 1024
+system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately"
+
+[language-server.lsp-ai.config.completion]
+model = "model1"
+
+[language-server.lsp-ai.config.completion.parameters]
+max_tokens = 128
+max_context = 2048
+
+[language-server.lsp-ai.config.completion.parameters.fim]
+start = "<fim_prefix>"
+middle = "<fim_suffix>"
+end = "<fim_middle>"
+
+## Configure the messages per your needs
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "system"
+content = "Instructions:\n- You are an AI programming assistant.\n- Given a piece of code with the cursor location marked by \"<CURSOR>\", replace \"<CURSOR>\" with the correct code or comment.\n- First, think step-by-step.\n- Describe your plan for what to build in pseudocode, written out in great detail.\n- Then output the code replacing the \"<CURSOR>\"\n- Ensure that your completion fits within the language context of the provided code snippet (e.g., Python, JavaScript, Rust).\n\nRules:\n- Only respond with code or comments.\n- Only replace \"<CURSOR>\"; do not include any previously written code.\n- Never include \"<CURSOR>\" in your response\n- If the cursor is within a comment, complete the comment meaningfully.\n- Handle ambiguous cases by providing the most contextually appropriate completion.\n- Be consistent with your responses."
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "def greet(name):\n    print(f\"Hello, {<CURSOR>}\")"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "assistant"
+content = "name"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "function sum(a, b) {\n    return a + <CURSOR>;\n}"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "assistant"
+content = "b"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "fn multiply(a: i32, b: i32) -> i32 {\n    a * <CURSOR>\n}"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "assistant"
+content = "b"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "# <CURSOR>\ndef add(a, b):\n    return a + b"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "assistant"
+content = "Adds two numbers"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "# This function checks if a number is even\n<CURSOR>"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "assistant"
+content = "def is_even(n):\n    return n % 2 == 0"
+
+[[language-server.lsp-ai.config.completion.parameters.messages]]
+role = "user"
+content = "{CODE}"

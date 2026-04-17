@@ -1,0 +1,212 @@
+theme = "better_catppuccin_macchiato"
+
+[editor]
+auto-save = true
+auto-format = true
+bufferline = "multiple"
+color-modes = true
+completion-replace = true
+cursorcolumn = false
+cursorline = true
+line-number = "relative"
+mouse = true
+rulers = [100]
+true-color = true
+#end-of-line-diagnostics = "hint"
+clipboard-provider = "termcode"
+
+[editor.inline-diagnostics]
+cursor-line = "warning" # show warnings and errors on the cursorline inline
+
+[editor.whitespace.render]
+space = "none"
+nbsp = "none"
+tab = "none"
+newline = "none"
+
+[editor.whitespace.characters]
+space = "·"
+nbsp = "⍽"
+tab = "→"
+newline = "⏎"
+tabpad = "·" # Tabs will look like "→···" (depending on tab width)
+
+[editor.file-picker]
+hidden = false
+git-ignore = false
+
+[editor.statusline]
+left = [
+  "mode",
+  "spacer",
+  "version-control",
+  "spacer",
+  "separator",
+  "file-name",
+  "file-modification-indicator"
+]
+right = [
+  "spinner",
+  "spacer",
+  "workspace-diagnostics",
+  "separator",
+  "spacer",
+  "diagnostics",
+  "position",
+  "file-encoding",
+  "file-line-ending",
+  "file-type"
+]
+separator = "╎"
+mode.normal = "NORMAL "
+mode.insert = "INSERT "
+mode.select = "SELECT "
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.indent-guides]
+render = true
+character = "╎" # Some characters that work well: "▏", "┆", "┊", "╎"
+skip-levels = 0
+
+[editor.soft-wrap]
+enable = true
+max-wrap = 10 # increase value to reduce forced mid-word wrapping
+max-indent-retain = 40
+
+[editor.search]
+smart-case = true
+
+[keys.normal]
+# esc is remapped to capslock locally
+esc = ["collapse_selection", "keep_primary_selection", ":w"]
+C-v = "vsplit"
+#C-h = "jump_view_left"
+#C-j = "jump_view_down"
+#C-k = "jump_view_up"
+#C-l = "jump_view_right"
+#C-d = ["keep_primary_selection", "move_prev_word_start", "move_next_word_end", "search_selection", "select_mode"]
+
+## double current line
+"C-d" = ["normal_mode", "save_selection", "extend_to_line_bounds", "yank_to_primary_clipboard",
+         "paste_primary_clipboard_before", "jump_backward", "insert_mode"] 
+
+# buffer navigation
+"S-tab" = "goto_previous_buffer"
+"tab" = "goto_next_buffer"
+
+"K" = "insert_newline"
+
+# Move line up/down using A-k, A-j
+"A-k" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before"
+]
+"A-j" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_down",
+  "paste_before"
+]
+
+# yazi key-binding
+C-y = [
+  ':sh rm -f /tmp/unique-file',
+  ':insert-output yazi %{buffer_name} --chooser-file=/tmp/unique-file',
+  ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat /tmp/unique-file}',
+  ':redraw',
+]
+
+# Move / select by word
+"A-b" = "move_prev_word_start"
+"A-f" = "move_next_word_end"
+"A-[" = "move_prev_long_word_start"
+"A-]" = "move_next_long_word_end"
+"A-B" = "extend_prev_word_start"
+"A-F" = "extend_next_word_end"
+"A-S-left" = "extend_prev_word_start"
+"A-S-right" = "extend_next_word_end"
+
+# Muscle memory
+"{" = ["extend_to_line_bounds", "goto_prev_paragraph"]
+"}" = ["extend_to_line_bounds", "goto_next_paragraph"]
+0 = "goto_line_start"
+"$" = "goto_line_end"
+"^" = "goto_first_nonwhitespace"
+G = "goto_file_end"
+# D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
+D = "kill_to_line_end"
+C = ["goto_line_start", "extend_to_line_bounds", "change_selection"]
+#"%" = "match_brackets"
+
+S = "surround_add" # Basically 99% of what I use vim-surround for
+#u = ["switch_to_lowercase", "collapse_selection", "normal_mode"]
+#U = ["switch_to_uppercase", "collapse_selection", "normal_mode"] 
+
+"*" = ["move_char_right", "move_prev_word_start", "move_next_word_end",
+       "search_selection",  "make_search_word_bounded", "search_next"]
+"#" = ["move_char_right", "move_prev_word_start", "move_next_word_end",
+       "search_selection", "make_search_word_bounded", "search_prev"]
+
+# Visually select lines above and below
+"S-up" = "select_line_above"
+"S-down" = "select_line_below"
+
+[keys.select]
+"S-up" = "select_line_above"
+"S-down" = "select_line_below"
+
+[keys.normal.t]
+q = ":bc"
+Q = ":bc!"
+
+# Git
+[keys.normal.space.g]
+f = "changed_file_picker"
+r = ":reset-diff-change"
+# inline blame
+b = ":run-shell-command ~/.config/helix/utils/blame_line_pretty.sh %{buffer_name} %{cursor_line}"
+# full last commit in the line changes for the file
+B = ':open %sh{~/.config/helix/utils/blame_file_pretty.sh %{buffer_name} %{cursor_line}}'
+# inline hunk changes
+h = ':run-shell-command ~/.config/helix/utils/git-hunk.sh %{buffer_name} %{cursor_line} 3'
+
+[keys.normal.m]
+"\"" = "@f\";vmim"
+"'"  = "@f';vmim"
+"[" = "@f[;vmim"
+"(" = "@f(;vmim"
+"{" = "@f{;vmim"
+
+[keys.normal.space]
+l = ":toggle lsp.display-inlay-hints"
+
+# Remove vscode "training wheels"
+# Comment this to enable arrow navigation in insert mode
+[keys.insert]
+# VSCode-like auto-completeion (pretty much all IDEs do it on C-space)
+"C-space" = "completion"
+
+# Move / select by word (in insert mode)
+"A-b" = "move_prev_word_end"
+"A-f" = "move_next_word_start"
+"A-B" = "extend_prev_word_start"
+"A-F" = "extend_next_word_end"
+"A-S-left" = "extend_prev_word_end"
+"A-S-right" = "extend_next_word_end"
+"A-[" = "move_prev_long_word_end"
+"A-]" = "move_next_long_word_start"
+
+# Config Mode
+[keys.normal."C-h"]
+r = [":config-reload", ":reload-all"]
+o = ":config-open"
+l = ":o ~/.config/helix/languages.toml"
