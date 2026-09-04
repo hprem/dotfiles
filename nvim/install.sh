@@ -37,11 +37,14 @@ rm -rf nvim-linux-x86_64.tar.gz
 ln -s nvim-linux-x86_64 nvim
 ln -s ~/.pkgs/nvim/bin/nvim ~/.local/bin/nvim
 
-# Install vim-plug
-curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
-  --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# Install tree-sitter
+REPO="https://github.com/tree-sitter/tree-sitter"
+version="$(get_latest_ver $REPO)"i
+mkdir ~/.local/bin
+wget -O - https://github.com/tree-sitter/tree-sitter/releases/download/${version}/tree-sitter-linux-x64.gz | gunzip -c > ~/.local/bin/tree-sitter
+chmod +x ~/.local/bin/tree-sitter
 
-# Install nvim plugins using vim-plug
+# Launch neovim once to install nvim plugins
 nvim --headless +'PlugInstall' +qall
 
 echo "NeoVim setup is complete"

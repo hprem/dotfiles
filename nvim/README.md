@@ -9,7 +9,7 @@ repo="neovim/neovim"
 ver="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name')"
 
 mkdir -p ~/.local ~/.pkgs; cd ~/.pkgs
-wget https://github.com/neovim/neovim/releases/download/$ver/nvim-linux-x86_64.tar.gz
+wget https://github.com/$repo/releases/download/$ver/nvim-linux-x86_64.tar.gz
 tar xf nvim-linux-x86_64.tar.gz
 rm -rf nvim-linux-x86_64.tar.gz
 ln -s nvim-linux-x86_64 nvim
@@ -17,4 +17,12 @@ ln -s ~/.pkgs/nvim/bin/nvim ~/.local/bin/nvim
 
 # Launch neovim to make sure all needed plugins are installed
 nvim --headless +qall
+
+# Install blinkit binary
+repo="saghen/blink.cmp"
+ver="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name')"
+ddir=~/.local/share/nvim/site/pack/plugins/start/blink.cmp/lib
+mkdir -p $ddir
+wget https://github.com/$repo/releases/download/$ver/x86_64-unknown-linux-gnu.so -O $ddir/libblink_cmp_fuzzy.so
+
 ```

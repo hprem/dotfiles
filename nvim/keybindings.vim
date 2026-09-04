@@ -24,12 +24,12 @@ nnoremap <leader>fd :Telescope diagnostics<CR>
 
 "" Splits
 nnoremap <leader>v :vsplit<CR>
-nnoremap <leader>s :split<CR>a
+nnoremap <leader>s :split<CR>
 
 "" Quit
 nnoremap <leader>c :close<CR>
 nnoremap <leader>q :q<CR>
-nnoremap <leader>Q :q!<CR>
+nnoremap <leader>Q :qa<CR>
 
 "" Delete previous word
 inoremap <M-BS> <C-w>

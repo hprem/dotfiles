@@ -11,8 +11,8 @@ set cursorline
 set smartindent
 set hlsearch
 set incsearch
-" set number
-" set signcolumn=yes
+set number
+set signcolumn=yes
 
 " General settings
 set mouse=ar

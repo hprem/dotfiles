@@ -10,8 +10,9 @@ local plugins = {
   { 'nvim-lualine/lualine.nvim' },             -- bottom status bar
 
   -- File explorer & Navigation
-  { "nvim-telescope/telescope.nvim" },
-  { "nvim-neo-tree/neo-tree.nvim" },
+  { 'nvim-telescope/telescope.nvim' },
+  { 'nvim-neo-tree/neo-tree.nvim' },
+  { 'ibhagwan/fzf-lua' },
   -- dependencies
   { "nvim-lua/plenary.nvim" },
   { "MunifTanjim/nui.nvim" },
@@ -28,8 +29,26 @@ local plugins = {
   -- Movement
   { 'easymotion/vim-easymotion' },
 
-   -- Comment
- { 'numToStr/Comment.nvim' },
+  -- Comment
+  { 'numToStr/Comment.nvim' },
+
+  -- Yang syntax highlight
+  { 'nathanalderson/yang.vim' },
+
+  -- Code Completion
+  { 'saghen/blink.cmp' },
+  { 'saghen/blink.lib' },              -- dependency for blink
+  { 'onsails/lspkind.nvim' },          -- dependency for blink
+  { 'rafamadriz/friendly-snippets' },  -- dependency for blink
+  { 'L3MON4D3/LuaSnip' },
+  { 'danymat/neogen' },
+  { 'nvim-treesitter/nvim-treesitter' },
+
+  -- Python
+
+  -- AI
+  { 'greggh/claude-code.nvim' },
+  { 'olimorris/codecompanion.nvim' },
 }
 
 local pending = 0
@@ -71,11 +90,70 @@ require("plugins.neotree")
 -- Telescope 
 require("plugins.telescope")
 
+-- Fzf
+require("plugins.fzf")
+
+-- LSP and Code Completion
+require("plugins.treesitter")
+require("plugins.lsp")      -- Native LSP setup
+require("plugins.luasnip")  -- Snippets (Required by blink)
+require("plugins.blink")    -- Completion UI
+require("plugins.neogen")   -- Docstrings
+
+-- Local LLMs
+require('plugins.ai')
+
+-- claude code
+require('claude-code').setup()
+
 -- Indent lines
 require("ibl").setup()
 
 -- Comment
 require('Comment').setup()
+
+-- enable ruff & ty LSP servers for Python
+vim.lsp.enable({ 'ruff', 'ty' })
+
+-- autoformat on save
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.py',
+  callback = function(ev)
+    vim.lsp.buf.code_action({
+      context = { only = { 'source.organizeImports' } },
+      apply = true,
+    })
+    vim.lsp.buf.format({ bufnr = ev.buf, name = 'ruff' })
+  end,
+})
+
+-- Optional: show diagnostics in a floating window on cursor hold
+vim.diagnostic.config({
+  virtual_text = true,       -- inline error/warning text
+  signs = {
+    active = true,
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN]  = "",
+      [vim.diagnostic.severity.HINT]  = "󰟃",
+      [vim.diagnostic.severity.INFO]  = "",
+    },
+  },
+  underline = true,          -- underline problematic code
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    border = 'rounded',
+    source = true,           -- show which LSP reported it
+  },
+})
+
+-- Optional: open float on cursor hover
+vim.api.nvim_create_autocmd('CursorHold', {
+  callback = function()
+    vim.diagnostic.open_float(nil, { focus = false })
+  end,
+})
 
 -- Use tmux clipboard when running inside tmux
 if vim.env.TMUX then
@@ -92,3 +170,28 @@ if vim.env.TMUX then
     cache_enabled = true,
   }
 end
+
+-- Git Signs
+require('gitsigns').setup {}
+-- require('gitsigns').setup {
+--   signs = {
+--     add          = { text = '┃' },
+--     change       = { text = '┃' },
+--     delete       = { text = '_' },
+--     topdelete    = { text = '‾' },
+--     changedelete = { text = '~' },
+--     untracked    = { text = '┆' },
+--   },
+-- }
+
+-- autoformat on save
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.py',
+  callback = function(ev)
+    vim.lsp.buf.code_action({
+      context = { only = { 'source.organizeImports' } },
+      apply = true,
+    })
+    vim.lsp.buf.format({ bufnr = ev.buf, name = 'ruff' })
+  end,
+})

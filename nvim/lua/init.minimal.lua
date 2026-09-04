@@ -17,8 +17,9 @@ local plugins = {
   { 'nvim-lualine/lualine.nvim' },             -- bottom status bar
 
   -- File explorer & Navigation
-  { "nvim-telescope/telescope.nvim" },
-  { "nvim-neo-tree/neo-tree.nvim" },
+  { 'nvim-telescope/telescope.nvim' },
+  { 'nvim-neo-tree/neo-tree.nvim' },
+  { 'ibhagwan/fzf-lua' },
   -- dependencies
   { "nvim-lua/plenary.nvim" },
   { "MunifTanjim/nui.nvim" },
