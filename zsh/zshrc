@@ -34,7 +34,7 @@ source "$HOME/.zplug/init.zsh"
 ## powerlevel10k theme
 zplug 'romkatv/powerlevel10k', as:theme, depth:1
 ## forgit
-zplug 'wfxr/forgit'
+zplug 'wfxr/forgit', at:main
 ## fzf-tab
 zplug 'Aloxaf/fzf-tab'
 ## zsh syntax highlighting like fish

@@ -27,16 +27,12 @@ done
 sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
 # Install needed components
-## NeoVIM
-read -p 'Do you want to proceed with the installation of NeoVIM' yn
-case $yn in
-  [Yy]*) ${CWD}/nvim/install.sh || die "Installation of NeoVIM had failed" ;;  
-  [Nn]*) echo "Skipped" ;;
-esac
-
-## TMux
-read -p 'Do you want to proceed with the installation of TMux' yn
-case $yn in
-  [Yy]*) ${CWD}/tmux/install.sh || die "Installation of TMux had failed" ;;  
-  [Nn]*) echo "Skipped" ;;
-esac
+declare -A comp_name=(["nvim"]="NeoVIM" ["tmux"]="TMux" ["helix"]="Helix")
+for comp in nvim tmux helix; do
+    name="${comp_name[$comp]}"
+    read -p "Do you want to proceed with the installation of $name" yn
+    case $yn in
+      [Yy]*) ${CWD}/$comp/install.sh || die "Installation of $name had failed" ;;  
+      [Nn]*) echo "Skipped installing $name" ;;
+    esac
+done
