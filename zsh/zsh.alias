@@ -15,7 +15,7 @@ alias vim='nvim'
 alias vimdiff='nvimdiff'
 
 alias hx='helix'
-alias cat='bat --theme "Catppuccin Macchiato"'
+alias bat='bat --theme "Catppuccin Macchiato"'
 
 alias vimrc='vi ~/.config/nvim/init.vim'
 

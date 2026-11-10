@@ -171,6 +171,18 @@ if vim.env.TMUX then
   }
 end
 
+-- Disable modifyOtherKeys mode in tmux to fix paste encoding.
+-- tmux intercepts the terminal response so Neovim never confirms the mode,
+-- but Ghostty still encodes \n as \e[27;5;106~ during paste.
+if vim.env.TMUX then
+  vim.api.nvim_create_autocmd('VimEnter', {
+    callback = function()
+      io.write('\27[>4;0m')
+      io.flush()
+    end,
+  })
+end
+
 -- Git Signs
 require('gitsigns').setup {}
 -- require('gitsigns').setup {
