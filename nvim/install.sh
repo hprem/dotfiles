@@ -48,4 +48,4 @@ chmod +x ~/.local/bin/tree-sitter
 nvim --headless +'PlugInstall' +qall
 
 echo "NeoVim setup is complete"
-echo "Make sure ~/.local/bin/ is in $PATH"
+echo "Make sure ~/.local/bin/ is in PATH Env var"
